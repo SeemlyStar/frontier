@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frontier: the valley</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* VOICE: quiet, watchful, a little uncanny; an explorer's field journal.
+   IDEA: the valley at night, read through its lights.
+   PICTURE: a living valley scene; lights glow green or amber with each place's state, the peak above.
+   COLOUR and TYPE: deep forest and mist, with signal green and amber; Spectral for the world, Figtree for controls.
+   LAYOUT: scene and place first, then what you can do; journal beside on wide screens, below on phones. */
+:root{color-scheme:light dark;
+  --bg:light-dark(#e6ece5,#0c1613);--panel:light-dark(#f5f8f3,#13201c);--ink:light-dark(#16231e,#e2ebe5);--dim:light-dark(#5b6b64,#93a59c);
+  --line:light-dark(#cdd8cf,#24352f);--glow:light-dark(#2e9a5d,#69dd98);--amber:light-dark(#c4740f,#f0a443);--err:light-dark(#a8361f,#f08a70);
+  --btn:light-dark(#ffffff,#1a2b25);--btn-h:light-dark(#eef5ef,#21362f);
+  --hill1:#3f5f52;--hill2:#22392f;--near:#1b2f27;--far:#5b6f78;--snow:#e7eef2;--river:#8fb6c4;--house:#9c8f7d;--roof:#5a4a3c;--ink-scene:#f4f1e8}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Figtree,system-ui,sans-serif;overflow-x:clip}
+button,input,textarea{font:inherit;color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:12px max(3vw,12px) 40px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:20px}
+header#status{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+.clock{display:flex;flex-direction:column;line-height:1.2}.clock span{color:var(--dim);font-size:13px}
+.meter{flex:1 1 180px;max-width:300px;font-size:13px}.meter span{display:block;color:var(--dim)}.meter b{color:var(--ink)}
+.meter i,.bars i{display:block;height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:3px}
+.meter em,.bars em{display:block;height:100%;background:var(--glow);transition:width .4s}
+.meter em.strained{background:var(--amber)}.meter em.overwhelmed,.meter em.collapse{background:var(--err)}
+.pill{font-size:13px;color:var(--dim)}.pill b{color:var(--ink);font-size:15px}
+#scene{border-radius:14px;overflow:hidden;aspect-ratio:600/220;background:#182c3a;box-shadow:0 1px 0 var(--line)}
+#scene svg{width:100%;height:100%;display:block}
+.lt{animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+@media(prefers-reduced-motion:reduce){.lt{animation:none}}
+#place{padding:16px 2px 4px}
+.where{font-size:13px;color:var(--dim)}
+h1{font:600 clamp(30px,4vw,44px)/1.05 Spectral,Georgia,serif;margin:4px 0 8px;text-wrap:balance}
+.line{font:17px/1.55 Spectral,Georgia,serif;margin:0 0 6px;max-width:68ch}.line .sub{color:var(--dim)}
+.flavour{font:italic 17px/1.6 Spectral,Georgia,serif;color:var(--dim);margin:0 0 6px;max-width:68ch}
+.link{background:none;border:0;padding:6px 0;color:var(--glow);cursor:pointer;font-weight:500;min-height:36px}
+.link:focus-visible,.act:focus-visible,[data-tab]:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
+#feed{font:17px/1.55 Spectral,Georgia,serif;padding:12px 16px;background:var(--panel);border-radius:12px;border:1px solid var(--line);margin:10px 0 18px;max-width:72ch}
+#feed p{margin:.35em 0}.dim{color:var(--dim)}.err{color:var(--err)}
+.news{color:var(--amber)}
+.card{border-radius:10px;padding:10px 14px;margin:8px 0;border:1px solid var(--line);background:var(--bg)}
+.card .tag{font:500 12px Figtree,sans-serif;color:var(--dim)}
+.card h3{font:600 22px/1.2 Spectral,serif;margin:2px 0 6px}
+.insight{border-color:var(--glow);box-shadow:0 0 0 3px color-mix(in srgb,var(--glow) 15%,transparent)}
+.insight .unlock{font-family:Figtree,sans-serif;font-size:15px}.insight .q{font-style:italic;color:var(--glow)}
+.fact{border-color:color-mix(in srgb,var(--glow) 50%,var(--line))}
+.rescue{border-color:var(--err)}.choice{border-color:var(--amber)}
+h2{font:600 13px Figtree,sans-serif;color:var(--dim);margin:20px 0 8px;letter-spacing:.01em}
+section h2:first-child{margin-top:18px}
+.grid{display:flex;flex-wrap:wrap;gap:8px}
+.act{display:inline-flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;min-height:44px;padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:var(--btn);cursor:pointer;text-align:left;max-width:100%}
+.act:hover{background:var(--btn-h)}.act small{font-size:12px;color:var(--dim)}
+.act[aria-disabled=true]{opacity:.55;cursor:not-allowed}.act .why{color:var(--err);opacity:.9}
+.act.small{min-height:38px;padding:6px 11px;font-size:14px}
+.act.primary{background:var(--glow);color:#06140d;border-color:transparent}
+.person{padding:12px 0;border-top:1px solid var(--line)}.person:first-child{border-top:0;padding-top:0}
+.pname{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;margin-bottom:8px}.pname span{color:var(--dim);font-size:14px}
+.owe{color:var(--amber)!important}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+#done{border:1px solid var(--glow);border-radius:12px;padding:12px 16px;margin:0 0 16px;font:17px/1.5 Spectral,serif}
+aside{align-self:start;position:sticky;top:76px;max-height:calc(100vh - 90px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:6px 16px 18px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:0 -16px;padding:0 10px;position:sticky;top:-6px;background:var(--panel)}
+[data-tab]{background:none;border:0;border-bottom:2px solid transparent;padding:12px 10px;cursor:pointer;color:var(--dim);font-weight:500;min-height:44px}
+[data-tab][aria-selected=true]{color:var(--ink);border-bottom-color:var(--glow)}
+.j{padding:8px 0;border-bottom:1px solid var(--line);font:16px/1.5 Spectral,serif}.j small{display:block;font:12px Figtree,sans-serif;color:var(--dim);margin-top:2px}
+.j.insight{border:0;box-shadow:none;padding:8px 0}.j p{margin:4px 0 0}
+.qs{padding-left:18px;margin:0;font:16px/1.5 Spectral,serif}.qs li{margin:6px 0}.qs li.done{color:var(--dim);text-decoration:line-through}.qs small{display:block;font:13px/1.4 Figtree,sans-serif;color:var(--glow);text-decoration:none}
+.bars{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0;font:12px Figtree,sans-serif;color:var(--dim)}
+.col{display:flex;flex-direction:column;gap:8px;align-items:stretch}.col .act{width:100%}
+.file{position:relative}.file input{position:absolute;inset:0;opacity:0;cursor:pointer}
+#dialog{position:fixed;inset:0;background:rgb(0 0 0/.45);display:grid;place-items:center;padding:16px;z-index:20}
+#dialog[hidden]{display:none}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;max-width:460px;width:100%}
+.box textarea{width:100%;font:12px ui-monospace,monospace;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px;margin-bottom:8px}
+@media(max-width:860px){.wrap{grid-template-columns:minmax(0,1fr)}aside{position:static;max-height:none}}
+@media(max-width:600px){h1{font-size:30px}#feed{padding:10px 12px}.pill b{font-size:14px}header#status{gap:6px 14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header id="status" aria-live="polite"><div class="clock"><b>Frontier</b><span>Loading your save…</span></div></header>
+  <main>
+    <div id="scene"></div>
+    <div id="place"></div>
+    <div id="done" hidden>You have finished the first slice. The question at the peak will have to wait for the next one. The valley keeps living if you want to stay, and your save carries forward.</div>
+    <div id="feed" aria-live="polite"></div>
+    <section><h2>Here</h2><div class="grid" id="here"></div></section>
+    <section><h2>People here</h2><div id="people"></div></section>
+    <section><h2>Nearby</h2><div class="grid" id="moves"></div></section>
+    <section><h2>Travel</h2><div class="grid" id="travel"></div></section>
+  </main>
+  <aside>
+    <div class="tabs" role="tablist"><button data-tab="journal" role="tab">Journal</button><button data-tab="people" role="tab">People</button><button data-tab="menu" role="tab">Save</button></div>
+    <div id="side"></div>
+  </aside>
+</div>
+<div id="dialog" hidden></div>
+<script>/*SCRIPT*/</script>
+</body>
+</html>
