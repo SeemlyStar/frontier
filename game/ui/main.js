@@ -193,7 +193,19 @@ function render() {
 
 // --- Input --------------------------------------------------------------------
 
+function showError(err) {
+  lastOut = [{ kind: 'error', text: `Something went wrong: ${err?.message || err}. Your last save is safe. Please tell Claude what you were doing.` }];
+  try { renderMain(); } catch { $('#feed').innerHTML = msgHtml(lastOut[0]); }
+}
+
+window.addEventListener('error', (e) => showError(e.error || e.message));
+window.addEventListener('unhandledrejection', (e) => showError(e.reason));
+
 function doAction(id) {
+  try { runAction(id); } catch (err) { showError(err); }
+}
+
+function runAction(id) {
   const before = state.player.loc + state.player.place;
   lastOut = perform(state, content, id);
   if (before !== state.player.loc + state.player.place) closer = false;

@@ -51,7 +51,8 @@ export function createSaves() {
     if (ref) {
       try {
         const snap = await withTimeout(ref.get());
-        if (snap.exists) return snap.data().state;
+        // Stored documents arrive frozen (read-only). Copy before the game changes it.
+        if (snap.exists) return JSON.parse(JSON.stringify(snap.data().state));
         return readLocal(); // carry a browser save over to the account on first visit
       } catch (e) {
         lastError = 'Your account save could not be reached, so this browser\'s copy was loaded.';
